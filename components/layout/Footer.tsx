@@ -10,7 +10,7 @@ import { Youtube } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer className='bg-black text-white flex flex-col items-center justify-center gap-4 pt-10'>
+        <footer className="bg-black mt-auto w-full text-white flex flex-col items-center justify-center gap-4 pt-10">
             <Logo />
             <ul className='flex gap-3'>
                 <li><Instagram /></li>

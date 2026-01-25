@@ -16,6 +16,7 @@ const girl = The_Girl_Next_Door({
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    // disable scroll when menu is open on mobile
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
@@ -51,17 +52,17 @@ export default function Header() {
 
 
                     {/* nav_menuItems */}
-                    <nav className={`bg-white  z-50 absolute min-w-screen  md:min-w-9/12 md:max-w-190 flex flex-col  md:flex-row md:justify-between md:items-center    top-20 md:top-auto left-0 md:left-auto
+                    <nav className={`bg-white  z-50 absolute min-w-screen  md:min-w-9/12 md:max-w-190 flex flex-col  md:flex-row md:justify-between md:items-start top-20 md:top-20 left-0 md:left-auto
                     shadow-md p-6 md:p-4 gap-3 ${isMenuOpen ? 'block' : 'hidden'}`}>
-                        <div className={`flex gap-3 flex-col font-semibold ${girl.className}`} style={{ fontWeight: 700 }}>
-                            <p className='font-bold text-xl'>Info</p>
-                            <Link href={'/returns'}>Returns</Link>
-                            <Link href={'/returns'}>Shipping</Link>
-                            <Link href={'/returns'}>Order Cancellation</Link>
-                            <Link href={'/returns'}>Payment options</Link>
-                            <Link href={'/returns'}>About</Link>
-                            <Link href={'/returns'}>Contact</Link>
-                            <Link href={'/returns'}>FAQ</Link>
+                        <div className={`flex gap-3 flex-col md:mt-10 font-semibold ${girl.className}`} style={{ fontWeight: 700 }}>
+                            <p className='font-bold text-3xl'>Info</p>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/returns'}>Returns</Link>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/shipping'}>Shipping</Link>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/cancellation'}>Order Cancellation</Link>
+                            {/* <Link onClick={() => setIsMenuOpen(false)} href={'/payment'}>Payment options</Link>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/about'}>About</Link>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/contact'}>Contact</Link>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/faq'}>FAQ</Link> */}
                         </div>
                         <div className='my-4'>
                             <h1 className={`font-bold text-xl  ${girl.className}`} style={{ fontWeight: 700 }}>NIIKA's store</h1>

@@ -1,8 +1,8 @@
 import Image from "next/image";
-import shirts from '@/public/images/home/hero_img.png'
 import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
 import Products from "@/components/layout/home/Products";
 import Link from "next/link";
+import hero_girl from '@/public/images/home/hero_girl.png'
 import Collection from "@/components/layout/home/Collection";
 import TrustSection from "@/components/layout/home/TrustSection";
 
@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <main className="min-h-screen   ">
-        <Image loading="lazy" src={shirts} className="w-full xl:w-10/12 m-auto  lg:h-170 object-cover" alt="hero image" />
+        <Image loading="lazy" src={hero_girl} className="w-full xl:w-10/12 m-auto  lg:h-170 object-cover" alt="hero image" />
 
 
 
