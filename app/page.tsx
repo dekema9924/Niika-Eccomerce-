@@ -1,65 +1,81 @@
 import Image from "next/image";
+import shirts from '@/public/images/home/hero_img.png'
+import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
+import Products from "@/components/layout/home/Products";
+import Link from "next/link";
+import Collection from "@/components/layout/home/Collection";
+import TrustSection from "@/components/layout/home/TrustSection";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <main className="min-h-screen   ">
+        <Image loading="lazy" src={shirts} className="w-full xl:w-10/12 m-auto  lg:h-170 object-cover" alt="hero image" />
+
+
+
+        {/* infinite marquee section */}
+        <div className=" bg-yellow-400/60 xl:w-10/12 m-auto  h-22 flex items-center text-black font-bold mt-5 overflow-hidden whitespace-nowrap">
+          <div className="infinite-scroll-component flex w-max gap-10  py-2 text-sm md:text-lg lg:text-xl">
+            <InfiniteMarquee />
+            <InfiniteMarquee />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* products section */}
+        <div className="w-11/12 xl:w-10/12   m-auto ">
+          <Products />
         </div>
+
+        <Link className="border p-2 flex items-center justify-center rounded-sm w-40 font-semibold m-auto" href={'/products'}>
+          see all products
+        </Link>
+
+
+        {/* //collection section */}
+        <section className="mt-10 w-full">
+          <div className="flex items-center justify-between w-11/12 m-auto mb-5">
+            <p className="text-[2em] font-bold">New Collection</p>
+            <span>SOON</span>
+          </div>
+          <Collection />
+
+
+        </section>
+
+        {/* trust section */}
+        <div>
+          <TrustSection />
+
+          <form className="bg-gray-100 p-4 md:p-8 min-h-75 md:min-h-90 flex items-center flex-col justify-center" action="">
+            <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl my-4 text-center px-4">
+              Save 20% On Your Purchase Today
+            </h1>
+
+            <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-2xl gap-3 px-4">
+              <input
+                className="p-3 w-full md:w-auto md:flex-1 rounded-sm border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-black"
+                type="email"
+                placeholder="Enter your email"
+                required
+              />
+              <button
+                className="bg-black hover:bg-gray-800 transition-colors cursor-pointer w-full md:w-auto md:px-8 text-white p-3 rounded-sm"
+                type="submit"
+              >
+                Subscribe
+              </button>
+            </div>
+          </form>
+        </div>
+
+
+
+
       </main>
-    </div>
+
+    </>
+
+
   );
 }
