@@ -19,10 +19,10 @@ export default function Cancellationpage() {
             <div className={`p-5 w-10/12 m-auto`}>
                 <Image
                     src={cancel_order}
-                    width={1400}
-                    height={1400}
+                    width={2400}
+                    height={2400}
                     alt='cancel_order'
-                    className='h-120 w-full  m-auto object-cover'
+                    className='h-120 w-full  m-auto object-cover xl:object-[center_20%]'
                 />
                 <h1 className={`text-xl md:text-3xl font-semibold my-7 ${girlNextDoor.className}`} style={{ fontWeight: 700 }}>Can I cancel my Niika Order?</h1>
 
