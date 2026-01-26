@@ -3,6 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { CartContextProvider } from "@/context/CartContext";
+import Backdrop from "@/components/ui/Backdrop";
+import SearchItemInput from "@/components/ui/SearchItemInput";
+import { SearchContextProvider } from "@/context/SearchContext";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,16 +34,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
-        <div className="min-h-screen flex flex-col">
-          <div>
-            <Header />
-            <main className="grow">
-              {children}
-            </main>
-          </div>
+        <SearchContextProvider>
+          <CartContextProvider>
+            <div className="min-h-screen flex flex-col">
+              <div>
+                <Header />
+                <main className="grow relative">
+                  <Backdrop />
+                  <SearchItemInput />
+                  {children}
+                </main>
+              </div>
 
-          <Footer />
-        </div>
+              <Footer />
+            </div>
+          </CartContextProvider>
+        </SearchContextProvider>
       </body>
 
     </html>

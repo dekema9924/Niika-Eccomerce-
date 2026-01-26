@@ -7,6 +7,9 @@ import { The_Girl_Next_Door } from 'next/font/google'
 import girl_fasion from '@/public/images/home/girl_fasion.png'
 import Menu from '../ui/Menu'
 import { useEffect, useState } from 'react'
+import Cart from '../ui/cart/Cart'
+import { useCartContext } from '@/context/CartContext'
+import { useSearchContext } from '@/context/SearchContext'
 
 const girl = The_Girl_Next_Door({
     subsets: ['latin'],
@@ -15,6 +18,9 @@ const girl = The_Girl_Next_Door({
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isCartOpen, setIsCartOpen } = useCartContext()
+    const { setIsSearchOpen } = useSearchContext()
+
 
     // disable scroll when menu is open on mobile
     useEffect(() => {
@@ -59,10 +65,10 @@ export default function Header() {
                             <Link onClick={() => setIsMenuOpen(false)} href={'/returns'}>Returns</Link>
                             <Link onClick={() => setIsMenuOpen(false)} href={'/shipping'}>Shipping</Link>
                             <Link onClick={() => setIsMenuOpen(false)} href={'/cancellation'}>Order Cancellation</Link>
-                            {/* <Link onClick={() => setIsMenuOpen(false)} href={'/payment'}>Payment options</Link>
-                            <Link onClick={() => setIsMenuOpen(false)} href={'/about'}>About</Link>
-                            <Link onClick={() => setIsMenuOpen(false)} href={'/contact'}>Contact</Link>
-                            <Link onClick={() => setIsMenuOpen(false)} href={'/faq'}>FAQ</Link> */}
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/auth/signup'}>Sign-Up</Link>
+                            <Link onClick={() => setIsMenuOpen(false)} href={'/auth/signin'}>Sign-In</Link>
+
+
                         </div>
                         <div className='my-4'>
                             <h1 className={`font-bold text-xl  ${girl.className}`} style={{ fontWeight: 700 }}>NIIKA's store</h1>
@@ -93,8 +99,14 @@ export default function Header() {
 
             {/* right-nav */}
             <div className='flex items-center gap-4'>
-                <Search />
-                <ShoppingCart />
+                <Search onClick={() => { setIsSearchOpen(true) }} className='cursor-pointer' />
+                <ShoppingCart onClick={() => { setIsCartOpen(true) }} className='cursor-pointer' />
+                {
+
+                    <Cart
+                        isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
+
+                }
             </div>
         </header>
     )

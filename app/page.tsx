@@ -2,15 +2,45 @@ import Image from "next/image";
 import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
 import Products from "@/components/layout/home/Products";
 import Link from "next/link";
-import hero_girl from '@/public/images/home/hero_girl.png'
+import hero_mobile from '@/public/images/home/hero_girl.png'
 import Collection from "@/components/layout/home/Collection";
 import TrustSection from "@/components/layout/home/TrustSection";
+import heroDesktop from '@/public/images/home/heroDesktop.png'
 
 export default function Home() {
   return (
     <>
       <main className="min-h-screen   ">
-        <Image loading="lazy" src={hero_girl} className="w-full xl:w-10/12 m-auto  lg:h-170 object-cover" alt="hero image" />
+        <Image
+          src={hero_mobile}
+          alt="hero image"
+          width={1200}
+          height={1200}
+          loading="lazy"
+          className="
+    w-full xl:w-10/12 m-auto
+    h-125 lg:h-175 xl:h-200
+    object-cover
+    object-center
+    xl:hidden
+  "
+          sizes="(max-width: 1024px) 100vw, 80vw"
+        />
+
+        <Image
+          src={heroDesktop}
+          alt="hero image"
+          width={1600}
+          height={1600}
+          className="
+    hidden xl:block
+    w-full xl:w-10/12 m-auto
+    h-175 xl:h-200
+    object-cover
+    object-[center_40%]
+  "
+
+        />
 
 
 
