@@ -1,9 +1,43 @@
-import React from 'react';
-import { Mail, Lock, User, Github } from 'lucide-react';
+
+'use client'
+import { Mail, Lock, User, Github, Eye, EyeClosed, LoaderCircle } from 'lucide-react';
 import girl from '@/public/images/order_cancellation.png'
 import Link from 'next/link';
+import { useForm, SubmitHandler } from "react-hook-form"
+import { signUp } from '@/lib/server/auth.actions';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+type formInputTypes = {
+    name: string
+    email: string
+    password: string
+}
 
 export default function Signuppage() {
+    const { register, setError, handleSubmit, formState: { errors, isSubmitting } } = useForm<formInputTypes>()
+    const [isPasswordTxt, setIsPasswordTxt] = useState<string>("password")
+    const router = useRouter()
+
+    const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
+        const res = await signUp(data.name, data.email, data.password)
+        if (!res.success) {
+            console.log(res)
+
+            if (res.error.toLowerCase().includes("exists")) {
+                setError("email", {
+                    type: "server",
+                    message: res.error,
+                });
+                return;
+            }
+        }
+        console.log(res)
+        router.push('/auth/signin')
+
+
+    }
+
     return (
         <div className="min-h-screen flex flex-col lg:flex-row">
             {/* Left Side - bgimage */}
@@ -59,6 +93,7 @@ export default function Signuppage() {
                                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                             </svg>
+
                             <span className="font-medium">Continue with Google</span>
                         </button>
 
@@ -74,60 +109,108 @@ export default function Signuppage() {
                         </div>
 
                         {/* Form Fields */}
-                        <div className="space-y-3 lg:space-y-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 lg:space-y-4">
+                            {/* name input */}
                             <div>
                                 <label className="block text-xs lg:text-sm font-medium mb-1.5 lg:mb-2">Full Name</label>
                                 <div className="relative">
                                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
                                     <input
+                                        {...register("name", { required: "Name field cannot be empty" })}
                                         type="text"
                                         placeholder="Enter your full name"
                                         className="w-full pl-9 lg:pl-10 pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
                                     />
                                 </div>
+                                {errors.name && (
+                                    <span className='block text-xs text-red-500'>{errors.name.message}</span>
+
+                                )}
+
                             </div>
 
+                            {/* email input */}
                             <div>
                                 <label className="block text-xs lg:text-sm font-medium mb-1.5 lg:mb-2">Email</label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
                                     <input
+                                        {...register("email", {
+                                            required: "Email address cannot be empty",
+                                            pattern: {
+                                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                message: "Enter a valid email address",
+                                            },
+                                        })}
                                         type="email"
                                         placeholder="johndoe@gmail.com"
                                         className="w-full pl-9 lg:pl-10 pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
                                     />
                                 </div>
+                                {errors.email && (
+                                    <span className='block text-xs text-red-500'>{errors.email.message}</span>
+
+                                )}
+
                             </div>
 
+                            {/* password input */}
                             <div>
                                 <label className="block text-xs lg:text-sm font-medium mb-1.5 lg:mb-2">Password</label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
-                                    <input
-                                        type="password"
-                                        placeholder="minimum 8 characters"
-                                        className="w-full pl-9 lg:pl-10 pr-12 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
-                                    />
-                                    <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                        <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </button>
+                                <div >
+                                    <div className="relative">
+                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
+                                        <input
+                                            {...register("password", {
+                                                required: "Password field cannot be empty",
+                                                maxLength: {
+                                                    value: 15,
+                                                    message: "Password cannot be more than 15 characters",
+                                                },
+                                                pattern: {
+                                                    value: /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).+$/,
+                                                    message: "Password must include one uppercase letter, one number, and one special character",
+                                                },
+                                            })}
+
+                                            type={isPasswordTxt}
+                                            autoComplete="new-password"
+                                            placeholder="minimum 8 characters"
+                                            className="w-full pl-9 lg:pl-10 pr-12 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
+                                        />
+                                        {
+                                            isPasswordTxt === 'text' ? <Eye onClick={() => setIsPasswordTxt("password")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" />
+                                                : <EyeClosed onClick={() => setIsPasswordTxt("text")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" />
+
+                                        }
+
+
+
+                                    </div>
+                                    {errors.password && (
+                                        <span className='block text-xs text-red-500'>{errors.password.message}</span>
+
+                                    )}
+
                                 </div>
                             </div>
 
-                            <button className="w-full bg-black text-white py-2.5 lg:py-3 rounded-lg font-semibold hover:bg-gray-800 transition text-sm lg:text-base">
-                                Sign Up
+
+
+                            <button disabled={isSubmitting} className={`w-full  text-white py-2.5 lg:py-3 rounded-lg font-semibold hover:bg-gray-800 transition text-sm lg:text-base ${isSubmitting ? "bg-gray-700 cursor-default" : "bg-black"}`}>
+                                {
+                                    !isSubmitting ? "Sign Up" : <span className='flex items-center justify-center animate-spin'><LoaderCircle /></span>
+                                }
                             </button>
+
 
                             <p className="text-center text-xs text-gray-500 mt-3 lg:mt-4">
                                 By signing up, you agree to our <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>
                             </p>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

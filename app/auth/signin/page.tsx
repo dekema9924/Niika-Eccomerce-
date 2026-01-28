@@ -1,10 +1,56 @@
-
-import { Mail, Lock, Github } from 'lucide-react';
+'use client'
+import { Mail, Lock, Github, Eye, EyeClosed, LoaderCircle } from 'lucide-react';
 import girl from '@/public/images/signin_girl.png'
 import Link from 'next/link';
+import { useForm, SubmitHandler } from "react-hook-form"
+import { signIn } from '@/lib/server/auth.actions';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+type formInputTypes = {
+    name: string
+    email: string
+    password: string
+    rememberMe: boolean
+}
+
 
 
 export default function Signinpage() {
+    const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<formInputTypes>()
+    const [isPasswordTxt, setIsPasswordTxt] = useState<string>("password")
+    const router = useRouter()
+
+    const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
+        const res = await signIn(data.email, data.password, data.rememberMe)
+
+        if (!res.success) {
+            console.log(res)
+            if (res.error.includes("Invalid")) {
+                setError("email", {
+                    type: "server",
+                    message: res.error,
+                });
+                setError("password", {
+                    type: "server",
+                    message: res.error,
+                });
+                return;
+            }
+            if (res.error) {
+                setError("email", {
+                    type: "server",
+                    message: res.error
+                })
+            }
+        }
+
+        if (res.data?.url) {
+            router.push(res.data?.url)
+        }
+
+
+    }
     return (
         <div className="min-h-screen flex flex-col lg:flex-row">
             {/* Left Side - bgimage */}
@@ -70,17 +116,30 @@ export default function Signinpage() {
                         </div>
 
                         {/* Form Fields */}
-                        <div className="space-y-3 lg:space-y-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 lg:space-y-4">
+                            {/* email field */}
                             <div>
                                 <label className="block text-xs lg:text-sm font-medium mb-1.5 lg:mb-2">Email</label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
                                     <input
+                                        {...register("email", {
+                                            required: "Email address cannot be empty",
+                                            pattern: {
+                                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                message: "Enter a valid email address",
+                                            },
+
+                                        })}
+
                                         type="email"
                                         placeholder="johndoe@gmail.com"
                                         className="w-full pl-9 lg:pl-10 pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
                                     />
                                 </div>
+                                {errors.email && (
+                                    <span className='block text-xs text-red-500'>{errors.email.message}</span>
+                                )}
                             </div>
 
                             <div>
@@ -88,24 +147,36 @@ export default function Signinpage() {
                                     <label className="block text-xs lg:text-sm font-medium">Password</label>
                                     <a href="#" className="text-xs lg:text-sm text-black font-medium hover:underline">Forgot password?</a>
                                 </div>
+
+                                {/* password field */}
                                 <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
-                                    <input
-                                        type="password"
-                                        placeholder="Enter your password"
-                                        className="w-full pl-9 lg:pl-10 pr-12 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
-                                    />
-                                    <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                        <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </button>
+                                    <div>
+                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-gray-400" />
+                                        <input
+                                            {...register("password", { required: "password field cannot be empty" })}
+                                            type={isPasswordTxt}
+                                            autoComplete='new-password'
+                                            placeholder="Enter your password"
+                                            className="w-full pl-9 lg:pl-10 pr-12 py-2.5 lg:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm lg:text-base"
+                                        />
+                                        {
+                                            isPasswordTxt === 'text' ? <Eye onClick={() => setIsPasswordTxt("password")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" />
+                                                : <EyeClosed onClick={() => setIsPasswordTxt("text")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" />
+
+                                        }                                    </div>
+                                    {errors.password && (
+                                        <span className='block text-xs text-red-500'>{errors.password.message}</span>
+                                    )}
+
+
+
                                 </div>
                             </div>
 
                             <div className="flex items-center">
                                 <input
+                                    {...register("rememberMe")}
+                                    name='rememberMe'
                                     type="checkbox"
                                     id="remember"
                                     className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
@@ -115,10 +186,12 @@ export default function Signinpage() {
                                 </label>
                             </div>
 
-                            <button className="w-full bg-black text-white py-2.5 lg:py-3 rounded-lg font-semibold hover:bg-gray-800 transition text-sm lg:text-base">
-                                Sign In
+                            <button disabled={isSubmitting} className={`w-full  text-white py-2.5 lg:py-3 rounded-lg font-semibold hover:bg-gray-800 transition text-sm lg:text-base ${isSubmitting ? "bg-gray-700 cursor-default" : "bg-black"}`}>
+                                {
+                                    !isSubmitting ? "Sign In" : <span className='flex items-center justify-center animate-spin'><LoaderCircle /></span>
+                                }
                             </button>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
