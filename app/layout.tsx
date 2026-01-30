@@ -7,7 +7,7 @@ import { CartContextProvider } from "@/context/CartContext";
 import Backdrop from "@/components/ui/Backdrop";
 import SearchItemInput from "@/components/ui/SearchItemInput";
 import { SearchContextProvider } from "@/context/SearchContext";
-
+import { AccountModalProvider } from "@/context/ModalContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,18 +36,20 @@ export default function RootLayout({
       >
         <SearchContextProvider>
           <CartContextProvider>
-            <div className="min-h-screen flex flex-col">
-              <div>
-                <Header />
-                <main className="grow relative">
-                  <Backdrop />
-                  <SearchItemInput />
-                  {children}
-                </main>
-              </div>
+            <AccountModalProvider>
+              <div className="min-h-screen flex flex-col">
+                <div>
+                  <Header />
+                  <main className="grow relative">
+                    <Backdrop />
+                    <SearchItemInput />
+                    {children}
+                  </main>
+                </div>
 
-              <Footer />
-            </div>
+                <Footer />
+              </div>
+            </AccountModalProvider>
           </CartContextProvider>
         </SearchContextProvider>
       </body>

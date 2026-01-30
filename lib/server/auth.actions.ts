@@ -1,5 +1,6 @@
 'use server'
 import { auth } from "./auth";
+import { prisma } from '@/lib/server/prisma'
 
 // /sign-up/email
 
@@ -28,16 +29,28 @@ export const signUp = async (name: string, email: string, password: string) => {
 
 
 // /sign-in/email
-export const signIn = async (email: string, password: string, rememberMe: boolean) => {
+export const signIn = async (email: string, password: string, rememberMe?: boolean) => {
     try {
         const data = await auth.api.signInEmail({
             body: {
                 email,
                 password,
-                rememberMe,
                 callbackURL: "http://localhost:3000",
+
             },
         });
+
+        // If remember me is false, update the session expiration
+        if (data.token) {
+            await prisma.session.update({
+                where: { token: data.token },
+                data: {
+                    expiresAt: new Date(Date.now() + (rememberMe ? 5 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000))
+                    // rememberMe = true → 5 days
+                    // rememberMe = false → 1 hour
+                }
+            })
+        }
 
         return { success: true, data }
     }

@@ -21,11 +21,12 @@ export default function Signinpage() {
     const [isPasswordTxt, setIsPasswordTxt] = useState<string>("password")
     const router = useRouter()
 
+
     const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
         const res = await signIn(data.email, data.password, data.rememberMe)
+        console.log("remember me", data.rememberMe)
 
         if (!res.success) {
-            console.log(res)
             if (res.error.includes("Invalid")) {
                 setError("email", {
                     type: "server",
@@ -37,12 +38,12 @@ export default function Signinpage() {
                 });
                 return;
             }
-            if (res.error) {
-                setError("email", {
-                    type: "server",
-                    message: res.error
-                })
-            }
+            // if (res.error) {
+            //     setError("email", {
+            //         type: "server",
+            //         message: res.error
+            //     })
+            // }
         }
 
         if (res.data?.url) {
@@ -182,7 +183,7 @@ export default function Signinpage() {
                                     className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                                 />
                                 <label htmlFor="remember" className="ml-2 text-xs lg:text-sm text-gray-600">
-                                    Remember me for 30 days
+                                    Remember me for 5 days
                                 </label>
                             </div>
 

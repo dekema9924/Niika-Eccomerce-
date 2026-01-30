@@ -10,6 +10,9 @@ import { useEffect, useState } from 'react'
 import Cart from '../ui/cart/Cart'
 import { useCartContext } from '@/context/CartContext'
 import { useSearchContext } from '@/context/SearchContext'
+import UserAvatar from '../ui/user/UserAvatar'
+import MyAccountModal from '../ui/user/MyAccountModal'
+import { useAccountModal } from '@/context/ModalContext'
 
 const girl = The_Girl_Next_Door({
     subsets: ['latin'],
@@ -20,6 +23,7 @@ export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isCartOpen, setIsCartOpen } = useCartContext()
     const { setIsSearchOpen } = useSearchContext()
+    const { isOpen, setIsOpen } = useAccountModal()
 
 
     // disable scroll when menu is open on mobile
@@ -107,6 +111,14 @@ export default function Header() {
                         isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />
 
                 }
+                <div className='relative'>
+                    <UserAvatar setIsAccountModalOpen={setIsOpen} />
+                    {
+                        isOpen && (
+                            <MyAccountModal />
+                        )
+                    }
+                </div>
             </div>
         </header>
     )
