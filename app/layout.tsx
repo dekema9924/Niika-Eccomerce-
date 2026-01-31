@@ -8,6 +8,10 @@ import Backdrop from "@/components/ui/Backdrop";
 import SearchItemInput from "@/components/ui/SearchItemInput";
 import { SearchContextProvider } from "@/context/SearchContext";
 import { AccountModalProvider } from "@/context/ModalContext";
+import { EditProfileModalProvider } from "@/context/ModalContext";
+import EditProfileClient from "@/components/ui/user/EditProfileClient";
+import { ProfileModalProvider } from "@/context/ModalContext";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,22 +38,31 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
+        <Toaster />
         <SearchContextProvider>
           <CartContextProvider>
-            <AccountModalProvider>
-              <div className="min-h-screen flex flex-col">
-                <div>
-                  <Header />
-                  <main className="grow relative">
-                    <Backdrop />
-                    <SearchItemInput />
-                    {children}
-                  </main>
-                </div>
+            <ProfileModalProvider>
+              <AccountModalProvider>
+                <EditProfileModalProvider>
 
-                <Footer />
-              </div>
-            </AccountModalProvider>
+
+                  <div className="min-h-screen flex flex-col">
+                    <div>
+                      <Header />
+                      <main className="grow relative">
+                        <EditProfileClient />
+                        <Backdrop />
+                        <SearchItemInput />
+                        {children}
+                      </main>
+                    </div>
+
+                    <Footer />
+                  </div>
+
+                </EditProfileModalProvider>
+              </AccountModalProvider>
+            </ProfileModalProvider>
           </CartContextProvider>
         </SearchContextProvider>
       </body>

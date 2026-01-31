@@ -47,7 +47,9 @@ export default function Signinpage() {
         }
 
         if (res.data?.url) {
-            router.push(res.data?.url)
+            window.location.href = res.data.url  // Full page reload with fresh session
+
+
         }
 
 

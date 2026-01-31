@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 
 function createModalContext(modalName: string) {
+
     const ModalContext = createContext<{
         isOpen: boolean
         setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,3 +25,4 @@ function createModalContext(modalName: string) {
 // Usage:
 export const { Provider: AccountModalProvider, useModal: useAccountModal } = createModalContext('AccountModal')
 export const { Provider: ProfileModalProvider, useModal: useProfileModal } = createModalContext('ProfileModal')
+export const { Provider: EditProfileModalProvider, useModal: useEditProfileModal } = createModalContext("EditProfileModal")

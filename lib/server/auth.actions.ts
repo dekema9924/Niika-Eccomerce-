@@ -1,4 +1,5 @@
 'use server'
+import { headers } from "next/headers";
 import { auth } from "./auth";
 import { prisma } from '@/lib/server/prisma'
 
@@ -67,3 +68,22 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
 
 
 
+
+// /sign-out
+export const signOut = async () => {
+    try {
+
+        await auth.api.signOut({
+            headers: await headers()
+        })
+        return { success: true }
+    }
+    catch (error: any) {
+        console.log(error)
+        return {
+            success: false,
+            error: error?.message ?? "Signout failed",
+        };
+    }
+
+}

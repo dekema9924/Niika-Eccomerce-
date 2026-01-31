@@ -21,11 +21,11 @@ export const auth = betterAuth({
         // requireEmailVerification: true
     },
     session: {
-        expiresIn: 20,
+        expiresIn: 60 * 60,
 
         cookieCache: {
-            enabled: false,
-            maxAge: 10,
+            enabled: true,
+            maxAge: 60 * 60,
             strategy: "compact"
         }
     },
