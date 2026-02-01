@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import Cart from '../ui/cart/Cart'
 import { useCartContext } from '@/context/CartContext'
 import { useSearchContext } from '@/context/SearchContext'
-import UserAvatar from '../ui/user/UserAvatar'
+import UserAvatar from '../ui/user/UserAvatarClient'
 import MyAccountModal from '../ui/user/MyAccountModal'
 import { useAccountModal } from '@/context/ModalContext'
 

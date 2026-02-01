@@ -1,7 +1,7 @@
 
 'use client'
 import { useEditProfileModal } from '@/context/ModalContext'
-import EditProfileModal from './EditProfileModal'
+import UploadAvatarInput from './UploadAvatarInput'
 
 export default function EditProfileClient() {
     const { isOpen } = useEditProfileModal()
@@ -10,7 +10,7 @@ export default function EditProfileClient() {
 
     return (
         <>
-            <EditProfileModal />
+            <UploadAvatarInput />
         </>
     )
 }
