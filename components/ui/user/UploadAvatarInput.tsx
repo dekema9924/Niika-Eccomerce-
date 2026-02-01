@@ -29,16 +29,19 @@ export default function UploadAvatarInput() {
         setIsMounted(true)
     }, [])
 
+
     const HandleBrowserClick = () => {
         fileInputRef.current?.click()
     }
 
 
+    //chnage name input
     const HandleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value
         setNewName(value)
     }
 
+    //upload file
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
@@ -49,6 +52,8 @@ export default function UploadAvatarInput() {
         setFileSizeInMB(fileSizeInMB)
     }
 
+
+    //submit chnageProfile form
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 

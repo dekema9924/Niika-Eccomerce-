@@ -12,11 +12,13 @@ type EditProfileModalProps = {
 export default function EditProfileModal({ HandleName }: EditProfileModalProps) {
     const { setIsOpen } = useEditProfileModal()
     const [userEmail, setUserEmail] = useState<string | undefined>('')
+    const { data: session } = authClient.useSession()
+
+
+    if (!session?.user?.id) throw new Error("Unauthorized")
 
     useEffect(() => {
-        authClient.getSession().then((res) => {
-            setUserEmail(res.data?.user.email)
-        })
+        setUserEmail(session?.user.email)
     }, [])
 
 

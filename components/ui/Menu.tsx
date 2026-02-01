@@ -7,7 +7,7 @@ type MenuProps = {
     setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function Menu({ isMenuOpen, setIsMenuOpen }: MenuProps) {
+export default function Menu({ isMenuOpen }: MenuProps) {
     return (
         <div className='cursor-pointer'>
             <span

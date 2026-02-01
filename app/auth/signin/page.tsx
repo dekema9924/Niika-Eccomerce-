@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useForm, SubmitHandler } from "react-hook-form"
 import { signIn } from '@/lib/server/auth.actions';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 type formInputTypes = {
     name: string
@@ -17,14 +18,15 @@ type formInputTypes = {
 
 
 export default function Signinpage() {
-    const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<formInputTypes>()
+    const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<formInputTypes>()
     const [isPasswordTxt, setIsPasswordTxt] = useState<string>("password")
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get('callbackUrl') || '/'
 
 
     const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
         const res = await signIn(data.email, data.password, data.rememberMe)
-        console.log("remember me", data.rememberMe)
 
         if (!res.success) {
             if (res.error.includes("Invalid")) {
@@ -47,8 +49,9 @@ export default function Signinpage() {
         }
 
         if (res.data?.url) {
-            window.location.href = res.data.url  // Full page reload with fresh session
-
+            toast.success('login Succesfull')
+            reset()
+            window.location.href = callbackUrl
 
         }
 
