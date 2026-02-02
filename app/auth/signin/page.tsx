@@ -20,7 +20,6 @@ type formInputTypes = {
 export default function Signinpage() {
     const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<formInputTypes>()
     const [isPasswordTxt, setIsPasswordTxt] = useState<string>("password")
-    const router = useRouter()
     const searchParams = useSearchParams()
     const callbackUrl = searchParams.get('callbackUrl') || '/'
 

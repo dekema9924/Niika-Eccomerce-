@@ -25,6 +25,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  role          Role      @default(user)
 
   @@map("user")
 }
@@ -75,4 +76,9 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum Role {
+  user
+  admin
 }

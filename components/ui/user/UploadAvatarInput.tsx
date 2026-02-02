@@ -56,47 +56,67 @@ export default function UploadAvatarInput() {
     //submit chnageProfile form
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
-        if (!file) return
-
         setIsUploading(true)
 
-        try {
-            const session = await getUserSession()
-            if (!session?.user?.id) throw new Error("User not authenticated")
+        // update if only name changed
+        if (newName) {
+            await updateUserName(newName)
+            await refetch()
+            toast.success("Profile updated successfully")
+            EditModal(false)
+            AccountModal(false)
+            router.refresh()
+        }
 
-            const signatureResult = await generateCloudinarySignatureAction()
+        if (file) {
+            try {
+                const session = await getUserSession()
+                if (!session?.user?.id) throw new Error("User not authenticated")
 
-            const formData = new FormData()
-            formData.append("file", file)
-            if (signatureResult.tags) formData.append("tags", signatureResult.tags)
-            formData.append("api_key", signatureResult.apiKey)
-            formData.append("timestamp", `${signatureResult.timestamp}`)
-            formData.append("signature", signatureResult.signature)
-            if (signatureResult.folder) formData.append("folder", signatureResult.folder)
+                const signatureResult = await generateCloudinarySignatureAction()
 
-            const uploadUrl = `https://api.cloudinary.com/v1_1/${signatureResult.cloudName}/image/upload`
+                const formData = new FormData()
+                formData.append("file", file as File)
+                if (signatureResult.tags) formData.append("tags", signatureResult.tags)
+                formData.append("api_key", signatureResult.apiKey)
+                formData.append("timestamp", `${signatureResult.timestamp}`)
+                formData.append("signature", signatureResult.signature)
+                if (signatureResult.folder) formData.append("folder", signatureResult.folder)
 
-            const uploadResponse = await fetch(uploadUrl, { method: "POST", body: formData })
-            const uploadResult = await uploadResponse.json()
-            if (!uploadResponse.ok) throw new Error(JSON.stringify(uploadResult))
+                const uploadUrl = `https://api.cloudinary.com/v1_1/${signatureResult.cloudName}/image/upload`
 
-            if (uploadResult.secure_url) {
+                const uploadResponse = await fetch(uploadUrl, { method: "POST", body: formData })
+                const uploadResult = await uploadResponse.json()
+
+                if (!uploadResponse.ok) {
+                    console.error("Cloudinary error payload:", uploadResult)
+                    throw new Error(uploadResult?.error?.message ?? "Upload failed")
+                }
+
+                let uploadedImageUrl = uploadResult.secure_url
                 setAvatarUrl(uploadResult.secure_url)
-                await updateUserName(newName)
-                await updateUserAvatar(session.user.id, uploadResult.secure_url)
+
+
+
+                // update if only avatar uploaded
+                if (uploadedImageUrl) {
+                    await updateUserAvatar(session.user.id, uploadedImageUrl)
+                }
+
                 await refetch()
-                toast.success("file uploaded successfully")
+                toast.success("Profile updated successfully")
                 EditModal(false)
                 AccountModal(false)
                 router.refresh()
 
-            }
 
-        } catch (error) {
-            console.error("Error uploading avatar", error)
-        } finally {
-            setIsUploading(false)
+
+            } catch (error: any) {
+                console.error("Upload error:", error.message)
+                toast.error(error.message)
+            } finally {
+                setIsUploading(false)
+            }
         }
     }
 

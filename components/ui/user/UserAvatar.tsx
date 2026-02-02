@@ -20,7 +20,7 @@ export default function UserAvatar({ imageUrl, setIsAccountModalOpen }: UserAvat
                 width={100}
                 height={100}
                 alt="userAvatar"
-                className="w-10 h-10 object-cover rounded-full cursor-pointer"
+                className="w-10 h-10 object-cover  rounded-full cursor-pointer"
             />
         </div>
     )
