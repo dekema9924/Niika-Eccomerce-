@@ -29,7 +29,7 @@ export const auth = betterAuth({
             strategy: "compact"
         }
     },
-    trustedOrigins: ["http://localhost:3000", "https://example.com"],
+    trustedOrigins: ["http://localhost:3000", "https://niika-eccomerce.vercel.app/"],
     plugins: [nextCookies()]
 
 });
