@@ -4,7 +4,7 @@ import girl from '@/public/images/signin_girl.png'
 import Link from 'next/link';
 import { useForm, SubmitHandler } from "react-hook-form"
 import { signIn } from '@/lib/server/auth.actions';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -15,7 +15,7 @@ type formInputTypes = {
     rememberMe: boolean
 }
 
-// Extract the component that uses useSearchParams
+
 function SignInForm() {
     const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<formInputTypes>()
     const [isPasswordTxt, setIsPasswordTxt] = useState<string>("password")
@@ -191,5 +191,8 @@ function SignInForm() {
 
 // Export default component without useSearchParams - this is what Next.js will try to prerender
 export default function Signinpage() {
-    return <SignInForm />
+    return <>
+        <Suspense fallback={<>...</>}>
+            <SignInForm />
+        </Suspense></>
 }
