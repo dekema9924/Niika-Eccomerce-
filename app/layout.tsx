@@ -9,7 +9,7 @@ import SearchItemInput from "@/components/ui/SearchItemInput";
 import { SearchContextProvider } from "@/context/SearchContext";
 import { AccountModalProvider } from "@/context/ModalContext";
 import { EditProfileModalProvider } from "@/context/ModalContext";
-import EditProfileClient from "@/components/ui/user/EditProfileClient";
+import EditProfileClient from "@/components/layout/user/EditProfileClient";
 import { ProfileModalProvider } from "@/context/ModalContext";
 import { Toaster } from "react-hot-toast";
 

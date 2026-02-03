@@ -1,5 +1,4 @@
 'use client'
-
 import Image from 'next/image'
 import { Trash2 } from 'lucide-react'
 

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEditProfileModal } from '@/context/ModalContext'
 import { useAccountModal } from '@/context/ModalContext'
-import LogoutButton from '../LogoutButton'
+import LogoutButton from '../../ui/LogoutButton'
 
 export default function MyAccountModal() {
     const { setIsOpen, isOpen } = useEditProfileModal()

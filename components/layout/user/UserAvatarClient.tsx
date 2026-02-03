@@ -1,7 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/client/auth.client'
-import UserAvatar from '@/components/ui/user/UserAvatar'
+import UserAvatar from '@/components/layout/user/UserAvatar'
 
 type UserAvatarProps = {
     setIsAccountModalOpen?: React.Dispatch<React.SetStateAction<boolean>>

@@ -6,6 +6,8 @@ import hero_mobile from '@/public/images/home/hero_girl.png'
 import Collection from "@/components/layout/home/Collection";
 import TrustSection from "@/components/layout/home/TrustSection";
 import heroDesktop from '@/public/images/home/heroDesktop.png'
+import SubscribeForm from "@/components/layout/SubscribeForm";
+import { fakeProductsData } from "./helpers/fakeProductData";
 
 export default function Home() {
   return (
@@ -45,16 +47,12 @@ export default function Home() {
 
 
         {/* infinite marquee section */}
-        <div className=" bg-yellow-400/60 xl:w-10/12 m-auto  h-22 flex items-center text-black font-bold mt-5 overflow-hidden whitespace-nowrap">
-          <div className="infinite-scroll-component flex w-max gap-10  py-2 text-sm md:text-lg lg:text-xl">
-            <InfiniteMarquee />
-            <InfiniteMarquee />
-          </div>
-        </div>
+        <InfiniteMarquee />
+
 
         {/* products section */}
         <div className="w-11/12 xl:w-10/12   m-auto ">
-          <Products />
+          <Products heading="Products" products={fakeProductsData} />
         </div>
 
         <Link className="border p-2 flex items-center justify-center rounded-sm w-40 font-semibold m-auto" href={'/products'}>
@@ -76,27 +74,7 @@ export default function Home() {
         {/* trust section */}
         <div>
           <TrustSection />
-
-          <form className="bg-gray-100 p-4 md:p-8 min-h-75 md:min-h-90 flex items-center flex-col justify-center" action="">
-            <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl my-4 text-center px-4">
-              Save 20% On Your Purchase Today
-            </h1>
-
-            <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-2xl gap-3 px-4">
-              <input
-                className="p-3 w-full md:w-auto md:flex-1 rounded-sm border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-black"
-                type="email"
-                placeholder="Enter your email"
-                required
-              />
-              <button
-                className="bg-black hover:bg-gray-800 transition-colors cursor-pointer w-full md:w-auto md:px-8 text-white p-3 rounded-sm"
-                type="submit"
-              >
-                Subscribe
-              </button>
-            </div>
-          </form>
+          <SubscribeForm />
         </div>
 
 
