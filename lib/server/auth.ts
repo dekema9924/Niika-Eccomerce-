@@ -16,10 +16,6 @@ export const auth = betterAuth({
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
 
-
-    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-    secret: process.env.BETTER_AUTH_SECRET!,
-
     emailAndPassword: {
         enabled: true,
         autoSignIn: false

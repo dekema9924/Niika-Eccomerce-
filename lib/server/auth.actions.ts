@@ -12,7 +12,6 @@ export const signUp = async (name: string, email: string, password: string) => {
                 name,
                 email,
                 password,
-                callbackURL: "http://localhost:3000",
             },
         });
 
