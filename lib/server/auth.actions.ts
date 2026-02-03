@@ -36,9 +36,9 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
             body: {
                 email,
                 password,
-                callbackURL: "http://localhost:3000",
 
             },
+            headers: await headers()
         });
 
         // If remember me is false, update the session expiration
@@ -53,13 +53,10 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
             })
 
         }
-
-
-
         return { success: true, data }
     }
     catch (error: any) {
-        console.log(error)
+        console.error(error)
         return {
             success: false,
             error: error?.message ?? "Signup failed",
