@@ -24,7 +24,7 @@ function SignInForm() {
 
     const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
         const res = await signIn(data.email, data.password, data.rememberMe)
-
+        console.log('Sign in response:', res)
         if (!res.success) {
             if (res.error.includes("Invalid")) {
                 setError("email", {
@@ -39,7 +39,7 @@ function SignInForm() {
             }
         }
 
-        if (res.data?.url) {
+        if (res.data) {
             toast.success('login Succesfull')
             reset()
             window.location.href = callbackUrl

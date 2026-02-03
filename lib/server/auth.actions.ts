@@ -39,6 +39,8 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
             },
             headers: await headers()
         });
+        // console.log('Better Auth response:', data) // Add logging
+
 
         // If remember me is false, update the session expiration
         if (data.token) {
