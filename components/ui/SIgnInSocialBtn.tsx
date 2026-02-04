@@ -15,7 +15,7 @@ const SigninSocialButton = ({ providerName, Icon, onClick, className = "" }: Soc
     return (
         <button
             onClick={onClick}
-            className={`w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2.5 lg:py-3 mb-3 hover:bg-gray-50 transition text-sm lg:text-base ${className}`}
+            className={`w-full cursor-pointer flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2.5 lg:py-3 mb-3 hover:bg-gray-50 transition text-sm lg:text-base ${className}`}
         >
             {Icon && <Icon className="w-4 h-4 lg:w-5 lg:h-5" />}
             <span className="font-medium">Continue with {providerName}</span>
