@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
         hostname: 'plus.unsplash.com',
         pathname: '/**', // allow any path
 
+      },
+      {
+        protocol: 'https',
+        hostname: "lh3.googleusercontent.com",
+        pathname: '/**', // allow any path
+
       }
     ],
   },

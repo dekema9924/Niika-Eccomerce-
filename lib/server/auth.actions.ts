@@ -88,3 +88,25 @@ export const signOut = async () => {
     }
 
 }
+
+
+//Oauth signin
+export const SocialSignin = async (provider: string) => {
+    try {
+
+        const data = await auth.api.signInSocial({
+            body: { provider },
+            headers: await headers()
+        });
+        return { success: true, data }
+    }
+    catch (error: any) {
+        console.log(error)
+        return {
+            success: false,
+            error: error?.message ?? `${provider} sign in failed`,
+        };
+    }
+
+}
+
