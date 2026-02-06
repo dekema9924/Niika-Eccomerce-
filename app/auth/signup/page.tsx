@@ -25,7 +25,6 @@ export default function Signuppage() {
     const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
         const res = await signUp(data.name, data.email, data.password)
         if (!res.success) {
-            console.log(res)
 
             if (res.error.toLowerCase().includes("exists")) {
                 setError("email", {
@@ -35,7 +34,6 @@ export default function Signuppage() {
                 return;
             }
         }
-        console.log(res)
         router.push('/auth/signin')
 
 

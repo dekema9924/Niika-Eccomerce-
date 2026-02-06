@@ -39,7 +39,17 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
             },
             headers: await headers()
         });
-        // console.log('Better Auth response:', data) // Add logging
+
+        if (data && !data.user.emailVerified) {
+            await sendEmailOTP(data.user.email, "email-verification").then((res) => {
+                console.log({
+                    userEmail: data.user.email,
+                    response: res
+                })
+            })
+
+        }
+
 
 
         // If remember me is false, update the session expiration
@@ -109,4 +119,51 @@ export const SocialSignin = async (provider: string) => {
     }
 
 }
+
+
+//sendOTP
+export const sendEmailOTP = async (email: string, type: "sign-in" | "email-verification" | "forget-password") => {
+    try {
+        const data = await auth.api.sendVerificationOTP({
+            body: {
+                email: email,
+                type, // required
+            },
+        });
+        return { success: true, data }
+    }
+    catch (error: any) {
+        console.log(error)
+        return {
+            success: false,
+            error: error?.message ?? `failed to send OTP`,
+        };
+    }
+
+}
+
+
+//VerifyEmailOTP
+export const verifyEmailOTP = async (email: string, otp: string) => {
+    try {
+        const data = await auth.api.verifyEmailOTP({
+            body: {
+                email,
+                otp
+            },
+        });
+        return { success: true, data }
+    }
+    catch (error: any) {
+        console.log(error)
+        return {
+            success: false,
+            error: error?.message ?? `Invalid OTP`,
+        };
+    }
+
+}
+
+
+
 

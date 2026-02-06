@@ -4,6 +4,8 @@ import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useEditProfileModal } from '@/context/ModalContext'
 import { authClient } from '@/lib/client/auth.client'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 type EditProfileModalProps = {
     HandleName: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -11,16 +13,15 @@ type EditProfileModalProps = {
 
 export default function EditProfileModal({ HandleName }: EditProfileModalProps) {
     const { setIsOpen } = useEditProfileModal()
-    const [userEmail, setUserEmail] = useState<string | undefined>('')
+    // const [userEmail, setUserEmail] = useState<string | undefined>('')
     const { data: session } = authClient.useSession()
+    const router = useRouter()
 
 
-    if (!session?.user?.id) throw new Error("Unauthorized")
-
-    useEffect(() => {
-        setUserEmail(session?.user.email)
-    }, [])
-
+    if (!session?.user?.id) {
+        router.push('/auth/sign-in')
+        return
+    }
 
 
 
@@ -52,7 +53,7 @@ export default function EditProfileModal({ HandleName }: EditProfileModalProps) 
                         Email
                     </label>
                     <input
-                        value={userEmail}
+                        value={session?.user.email}
                         readOnly
                         type='email'
                         id='email'

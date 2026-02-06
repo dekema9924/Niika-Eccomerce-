@@ -3,13 +3,14 @@ import { Mail, Lock, Eye, EyeClosed, LoaderCircle } from 'lucide-react';
 import girl from '@/public/images/signin_girl.png'
 import Link from 'next/link';
 import { useForm, SubmitHandler } from "react-hook-form"
-import { signIn } from '@/lib/server/auth.actions';
+import { sendEmailOTP, signIn } from '@/lib/server/auth.actions';
 import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import SigninSocialButton from '@/components/ui/SIgnInSocialBtn';
 import { GoogleIcon } from '@/public/icons/GoogleIcon';
 import { HandleSignInWithSocial } from '@/lib/client/HandleSocial';
+import { useRouter } from 'next/navigation';
 
 type formInputTypes = {
     name: string
@@ -27,7 +28,6 @@ function SignInForm() {
 
     const onSubmit: SubmitHandler<formInputTypes> = async (data) => {
         const res = await signIn(data.email, data.password, data.rememberMe)
-        console.log('Sign in response:', res)
         if (!res.success) {
             if (res.error.includes("Invalid")) {
                 setError("email", {
@@ -43,9 +43,15 @@ function SignInForm() {
         }
 
         if (res.data) {
-            toast.success('login Succesfull')
-            reset()
-            window.location.href = callbackUrl
+            if (!res.data.user.emailVerified) {
+                window.location.href = '/auth/verify-email'
+                toast.success("Check your email and verify your email")
+            } else {
+                toast.success('login Succesfull')
+                reset()
+                window.location.href = callbackUrl
+            }
+
         }
     }
 
