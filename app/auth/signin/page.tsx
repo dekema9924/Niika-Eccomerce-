@@ -140,7 +140,7 @@ function SignInForm() {
                             <div>
                                 <div className="flex items-center justify-between mb-1.5 lg:mb-2">
                                     <label className="block text-xs lg:text-sm font-medium">Password</label>
-                                    <a href="#" className="text-xs lg:text-sm text-black font-medium hover:underline">Forgot password?</a>
+                                    <Link href="/auth/forgot-password" className="text-xs lg:text-sm text-black font-medium hover:underline">Forgot password?</Link>
                                 </div>
 
                                 {/* password field */}

@@ -165,5 +165,53 @@ export const verifyEmailOTP = async (email: string, otp: string) => {
 }
 
 
+//send password OTP
+export const sendResetPasswordOtp = async (email: string, url: string) => {
+    try {
+        const data = await auth.api.requestPasswordReset({
+            body: {
+                email,
+                redirectTo: url
+            },
+        });
+        return { success: true, data }
+    }
+    catch (error: any) {
+        console.log(error)
+        return {
+            success: false,
+            error: error?.message ?? `failed to send otp`,
+        };
+    }
+
+}
+
+
+//reset-password
+export const ResetUserPassword = async (newPassword: string, token: string) => {
+    try {
+        const data = await auth.api.resetPassword({
+            body: {
+                newPassword,
+                token
+
+            },
+        });
+        return { success: true, data }
+    }
+    catch (error: any) {
+        console.log(error)
+        return {
+            success: false,
+            error: error?.message ?? `invalid token`,
+        };
+    }
+
+}
+
+
+
+
+
 
 

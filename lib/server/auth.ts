@@ -26,8 +26,15 @@ export const auth = betterAuth({
 
     emailAndPassword: {
         enabled: true,
-        autoSignIn: false
+        autoSignIn: false,
         // requireEmailVerification: true
+        sendResetPassword: async ({ user, url, token }, request) => {
+            void transporter.sendMail({
+                to: user.email,
+                subject: "Reset your password",
+                text: `Click the link to reset your password: ${url}`,
+            });
+        },
     },
 
     session: {
@@ -66,6 +73,7 @@ export const auth = betterAuth({
 
             } else {
                 // Send the OTP for password reset
+
             }
         },
     })]
