@@ -2,8 +2,12 @@
 import { headers } from "next/headers";
 import { auth } from "./auth";
 import { prisma } from '@/lib/server/prisma'
+import { getUserSession } from "./getUserSession";
+
+
 
 // /sign-up/email
+
 
 export const signUp = async (name: string, email: string, password: string) => {
     try {
@@ -75,9 +79,6 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
     }
 
 }
-
-
-
 
 
 // /sign-out

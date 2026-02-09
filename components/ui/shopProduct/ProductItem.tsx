@@ -6,7 +6,7 @@ type ProductItemProps = {
     image: string
     title: string
     price: number
-    discountPrice?: number
+    discountPrice?: number | null
 }
 
 const girl = The_Girl_Next_Door({ subsets: ['latin'], weight: '400' })

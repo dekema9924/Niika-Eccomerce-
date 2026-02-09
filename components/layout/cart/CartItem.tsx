@@ -1,46 +1,51 @@
-
-
-import { MinusIcon, PlusIcon, X } from 'lucide-react'
+'use client'
+import { X } from 'lucide-react'
 import Image from 'next/image'
 
-interface CartItemProps {
-    image: string
-    title: string
-    price: number
-    count: number
+type Props = {
+    cartItems: any[]
 }
 
-export default function CartItem() {
-    return (
-        <>
-            <div className=' w-11/12 border-b pb-3 border-gray-400 m-auto flex items-center justify-between'>
-                <div className='flex w-55 gap-3  '>
-                    <div className='relative'>
-                        <Image
-                            src={"https://images.unsplash.com/photo-1646142444991-6896b6a3b6e7?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
-                            alt='item_image'
-                            width={70}
-                            height={70}
-                            loading='lazy'
-                            className='rounded-2xl object-cover'
-                        />
-                        <span className='absolute -top-2 bg-red-600 rounded-full cursor-pointer text-white -right-2'>
-                            <X />
-                        </span>
-                    </div>
-                    <p className='text-lg font-semibold leading-5 overflow-x-hidden'>Futuristic Hooded Jacket</p>
-                </div>
-                <div className='flex flex-col gap-4'>
-                    <p className='font-semibold'>$120 USD</p>
-
-                    {/* item count */}
-                    <div className='bg-black w-22 h-10 text-white flex items-center justify-around text-bold rounded-2xl  '>
-                        <span><MinusIcon /></span>
-                        <span>3</span>
-                        <span><PlusIcon /></span>
-                    </div>
-                </div>
+export default function CartItem({ cartItems }: Props) {
+    if (cartItems.length === 0) {
+        return (
+            <div className='text-center p-10 text-gray-500'>
+                Your cart is empty
             </div>
-        </>
+        )
+    }
+
+    return (
+        <div>
+            {cartItems.map((items) => (
+                <div key={items.id} className='w-11/12 border-b pb-3 my-5 border-gray-400 m-auto flex items-center justify-between'>
+                    <div className='flex w-55 gap-3'>
+                        <div className='relative'>
+                            <Image
+                                src={items.product.images[0].url}
+                                alt='item_image'
+                                width={70}
+                                height={70}
+                                loading='lazy'
+                                className='rounded-2xl h-15 object-cover'
+                            />
+                            <span className='absolute -top-2 bg-red-600 rounded-full cursor-pointer text-white -right-2'>
+                                <X className='w-4 h-4' />
+                            </span>
+                        </div>
+                        <p className='text-lg font-semibold leading-5 overflow-x-hidden'>
+                            {items.product.name}
+                        </p>
+                    </div>
+                    <div className='flex flex-col gap-4'>
+                        <p className='font-semibold'>${items.product.price} USD</p>
+
+                        <div className='bg-black w-22 h-10 text-white flex items-center justify-around text-bold rounded-2xl'>
+                            <span>{items.quantity}</span>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
     )
 }

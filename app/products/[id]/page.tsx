@@ -5,34 +5,133 @@ import { useParams } from "next/navigation"
 import InfiniteMarquee from "@/components/ui/InfiniteMarquee"
 import SimilarProducts from "@/components/layout/productdetails/SimilarProducts"
 import SubscribeForm from "@/components/layout/SubscribeForm"
+import axios from "axios"
+import { useEffect, useMemo, useState } from "react"
+import { ProductDetailsInterface } from "@/types/product"
+import { addToCart } from "@/lib/client/cart"
+import { LoaderCircle } from "lucide-react"
+import toast from "react-hot-toast"
+import { useCart } from "@/context/cartItemContext"
+
 
 
 export default function ProductDetailsPage() {
     const { id } = useParams()
+    const { refreshCart } = useCart()
+    const [product, setProductDetails] = useState<ProductDetailsInterface | null>(null)
+    const [mainImage, setMainImage] = useState<string | undefined>(product?.image)
+    const [quantity, setQuantity] = useState(1)
+    const [selectedColor, setSelectedColor] = useState<string>('')
+    const [selectedSize, setSelectedSize] = useState<string>('')
+    const [isCartloading, setIsCartloading] = useState<boolean>(false)
 
-    // Mock product data - replace with actual data fetching
-    const product = {
-        id: id,
-        title: "Stylish Model in Floral Shirt",
-        category: "Men's jumpsuits",
-        price: 208,
-        originalPrice: 247,
-        status: "Out of stock",
-        images: [
-            "https://plus.unsplash.com/premium_photo-1673384389967-e31ea744f3eb?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8eWVsbG93JTIwZHJlc3N8ZW58MHx8MHx8fDA%3D",
-            "https://images.unsplash.com/photo-1671097828702-e0b4950a547c?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8eWVsbG93JTIwZHJlc3N8ZW58MHx8MHx8fDA%3D",
-            "https://plus.unsplash.com/premium_photo-1673384389447-5a4364e7c93b?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fHw%3D",
-            "https://images.unsplash.com/photo-1621143814870-d28ef0bb3844?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8eWVsbG93JTIwZHJlc3N8ZW58MHx8MHx8fDA%3D"
-        ],
-        colors: ["Pink", "Brown"],
-        sizes: ["X-Small", "Small", "Medium", "Large", "X-Large"],
-        estimatedDelivery: "Within 3 days",
-        deliveryDate: "January 7-11",
-        description: "The image features a young person with a slender build, wearing a stylish white shirt printed with large pink flowers and green leaves, likely made of a silky or smooth fabric.",
-        shippingInfo: "Free standard shipping on orders $50+ and free 60-day returns for Minna Members."
+
+
+    //handling add items
+    const addQuantity = () => {
+        //making sure users cant go over or below product quatity
+        if (selectedVariant && quantity > selectedVariant?.quantity - 1) {
+            setQuantity(1)
+        } else {
+            setQuantity(quantity + 1)
+        }
     }
 
+    const minusQuantity = () => {
+        //making sure users cant go over or below product quatity
+        if (selectedVariant && quantity < selectedVariant?.quantity + 1) {
+            setQuantity(1)
+        } else {
+            setQuantity(quantity + 1)
+
+        }
+    }
+
+
+
+
+
+
+    // func for getiing product details
+    async function fetchProductDetails() {
+        try {
+            const res = await axios.get(`/api/products/${id}`)
+            if (res.status === 200) {
+                setProductDetails(res.data)
+                if (res.data.colors.length > 0) {
+                    setSelectedColor(res.data.colors[0])
+                }
+                if (res.data.sizes?.length > 0) {
+                    setSelectedSize(res.data.sizes[0])
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching product:', error)
+        }
+    }
+
+    // When color or size changes, find the matching variant
+    const selectedVariant = useMemo(() => {
+        if (!product || !selectedColor || !selectedSize) return null
+
+        return product.variants?.find(
+            (v) => v.color === selectedColor && v.size === selectedSize
+        ) || null
+    }, [product, selectedColor, selectedSize])
+
+
+
+    //fetch product details 
+    useEffect(() => {
+        if (id) {
+            fetchProductDetails()
+        }
+    }, [id])
+
+
+
+    //chnage display images
+    const handleImageCarousel = (id: number) => {
+        setMainImage(product?.images[id])
+    }
+
+
+    //addTocart
+    const handleAddCart = async () => {
+        if (!product || !selectedVariant) return
+
+        try {
+            setIsCartloading(true)
+
+            const result = await addToCart({
+                productId: product.id,
+                quantity,
+                variantId: selectedVariant.id
+            })
+
+            if (result.success) {
+                toast.success(result.message)
+                await refreshCart() // ← Refresh cart immediately!
+
+                // Optional: Reset quantity after adding
+                setQuantity(1)
+            }
+        } catch (err: any) {
+            toast.error(err.message || "Failed to add to cart")
+        } finally {
+            setIsCartloading(false)
+        }
+    }
+
+
+
+
+    if (!product) return <div className="p-4 text-center">loading...</div>
+
+
+
     return (
+
         <>
             <main className="p-4 sm:p-7 max-w-7xl mx-auto">
                 {/* Breadcrumb navigation */}
@@ -51,8 +150,9 @@ export default function ProductDetailsPage() {
                         <div className="flex gap-3 sm:gap-4">
                             {/* Thumbnail images */}
                             <div className="flex flex-col gap-2 sm:gap-3">
-                                {product.images.map((img, index) => (
+                                {product.images?.map((img, index) => (
                                     <div
+                                        onClick={() => handleImageCarousel(index)}
                                         key={index}
                                         className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 border-2 border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:border-gray-400 transition"
                                     >
@@ -61,6 +161,7 @@ export default function ProductDetailsPage() {
                                             alt={`Product view ${index + 1}`}
                                             width={80}
                                             height={80}
+                                            loading="eager"
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -68,10 +169,11 @@ export default function ProductDetailsPage() {
                             </div>
 
                             {/* Main image */}
-                            <div className="flex-1 aspect-square bg-[#E5D5C6] rounded-2xl overflow-hidden">
+                            <div className="flex-1 transition-all duration-300 aspect-square bg-[#E5D5C6] rounded-2xl overflow-hidden">
                                 <Image
-                                    src={product.images[0]}
-                                    alt={product.title}
+                                    src={mainImage || product.image}
+                                    alt={product.name}
+                                    loading="eager"
                                     width={600}
                                     height={600}
                                     className="w-full h-full object-cover"
@@ -79,7 +181,7 @@ export default function ProductDetailsPage() {
                             </div>
                         </div>
 
-                        {/* Promo banner - Full width spanning from thumbnails to main image */}
+                        {/* Promo banner */}
                         <div className="relative bg-linear-to-r from-pink-100 to-pink-50 border-2 border-dashed border-pink-300 rounded-lg p-3 sm:p-4 overflow-hidden">
                             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                                 <span className="font-medium whitespace-nowrap">On the first purchase</span>
@@ -98,110 +200,119 @@ export default function ProductDetailsPage() {
                     {/* Right side - Product info */}
                     <div>
                         <p className="text-xs sm:text-sm text-gray-600 mb-2">{product.category}</p>
-                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">{product.title}</h1>
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">{product.name}</h1>
 
                         {/* Pricing */}
                         <div className="flex items-center gap-3 sm:gap-4 mb-2">
                             <span className="text-3xl sm:text-4xl font-bold text-[#FF6B35]">${product.price}</span>
-                            <span className="text-xl sm:text-2xl text-gray-400 line-through">${product.originalPrice}</span>
+                            {product.discountPrice && (
+                                <span className="text-xl sm:text-2xl text-gray-400 line-through">${product.discountPrice}</span>
+                            )}
                         </div>
-                        <p className="text-red-600 font-medium mb-6 sm:mb-8">{product.status}</p>
+                        <p className="text-red-600 font-medium mb-6 sm:mb-8">
+                            {product.isOutOfStock ? 'Out of stock' : 'In stock'}
+                        </p>
 
                         {/* Color selection */}
-                        <div className="mb-6">
-                            <h3 className="font-semibold mb-3">COLOR</h3>
-                            <div className="flex gap-3 flex-wrap">
-                                {product.colors.map((color) => (
-                                    <button
-                                        key={color}
-                                        className={`px-5 sm:px-6 py-2 border-2 rounded-md font-medium transition text-sm sm:text-base ${color === "Pink"
-                                            ? "bg-black text-white border-black"
-                                            : "border-gray-300 hover:border-gray-400"
-                                            }`}
-                                    >
-                                        {color}
-                                    </button>
-                                ))}
+                        {product.colors && product.colors.length > 0 && (
+                            <div className="mb-6">
+                                <h3 className="font-semibold mb-3">COLOR</h3>
+                                <div className="flex gap-3 flex-wrap">
+                                    {product.colors.map((color) => (
+                                        <button
+                                            onClick={() => setSelectedColor(color)}
+                                            key={color}
+                                            className={`px-5 sm:px-6 py-2 border-2 rounded-md font-medium transition text-sm sm:text-base border-gray-300 hover:border-gray-400 ${selectedColor === color ? "border-black!" : ""}`}
+                                        >
+                                            {color}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Size selection */}
-                        <div className="mb-6 sm:mb-8">
-                            <h3 className="font-semibold mb-3">SIZE</h3>
-                            <div className="flex gap-2 sm:gap-3 flex-wrap">
-                                {product.sizes.map((size) => (
-                                    <button
-                                        key={size}
-                                        className={`px-4 sm:px-5 py-2 border-2 rounded-md font-medium transition text-sm sm:text-base ${size === "X-Small"
-                                            ? "bg-black text-white border-black"
-                                            : "border-gray-300 hover:border-gray-400"
-                                            }`}
-                                    >
-                                        {size}
-                                    </button>
-                                ))}
+                        {product.sizes && product.sizes.length > 0 && (
+                            <div className="mb-6 sm:mb-8">
+                                <h3 className="font-semibold mb-3">SIZE</h3>
+                                <div className="flex gap-2 sm:gap-3 flex-wrap">
+                                    {product.sizes.map((size) => (
+                                        <button
+                                            onClick={() => setSelectedSize(size)}
+                                            key={size}
+                                            className={`px-4 sm:px-5 py-2 border-2 rounded-md font-medium transition text-sm sm:text-base ${selectedSize === size ? " border-black!" : ""} border-gray-300 hover:border-gray-400`}
+                                        >
+                                            {size}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Quantity and Add to Cart */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-6 sm:mb-8">
                             <div className="flex items-center border-2 border-gray-300 rounded-md w-full sm:w-auto">
-                                <button className="px-4 py-3 hover:bg-gray-100 transition w-11/12 max-w-90 ">−</button>
+                                <button onClick={() => { minusQuantity() }} className="px-4 py-3 hover:bg-gray-100 transition w-11/12 max-w-90">−</button>
                                 <input
                                     type="number"
-                                    value="1"
+                                    value={quantity}
                                     className="w-11/12 max-w-90 text-center border-x-2 border-gray-300 py-3"
                                     readOnly
                                 />
-                                <button className="px-4 py-3 hover:bg-gray-100 transition w-11/12 max-w-90 ">+</button>
+                                <button onClick={() => addQuantity()} className="px-4 py-3 hover:bg-gray-100 transition w-11/12 max-w-90">+</button>
                             </div>
-                            <button className="flex-1 bg-black text-white py-3 rounded-md font-semibold hover:bg-gray-800 transition">
-                                Add to Cart
+                            <button onClick={() => handleAddCart()} className={`flex-1 bg-black text-white py-3 rounded-md font-semibold hover:bg-gray-800 transition cursor-pointer ${!selectedVariant || !product || isCartloading ? "pointer-events-none cursor-none bg-gray-300 text-black!" : ""}`}>
+                                {!isCartloading ? "Add to Cart" : <LoaderCircle className="animate-spin mx-auto" />}
                             </button>
                         </div>
 
                         {/* Delivery info */}
-                        <div className="space-y-3 mb-6 sm:mb-8">
-                            <div className="flex items-center gap-3 text-green-700">
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                                <span className="font-medium text-sm sm:text-base">Estimated Delivery: {product.estimatedDelivery}</span>
+                        {(product.estimatedDelivery || product.deliveryDate) && (
+                            <div className="space-y-3 mb-6 sm:mb-8">
+                                {product.estimatedDelivery && (
+                                    <div className="flex items-center gap-3 text-green-700">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                        </svg>
+                                        <span className="font-medium text-sm sm:text-base">Estimated Delivery: {product.estimatedDelivery}</span>
+                                    </div>
+                                )}
+                                {product.deliveryDate && (
+                                    <div className="flex items-center gap-3 text-green-700">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span className="font-medium text-sm sm:text-base">Delivery date: {product.deliveryDate}</span>
+                                    </div>
+                                )}
                             </div>
-                            <div className="flex items-center gap-3 text-green-700">
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span className="font-medium text-sm sm:text-base">Delivery date: {product.deliveryDate}</span>
-                            </div>
-                        </div>
+                        )}
 
                         {/* Description */}
-                        <div className="mb-6 sm:mb-8">
-                            <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Description</h3>
-                            <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{product.description}</p>
-                        </div>
+                        {product.description && (
+                            <div className="mb-6 sm:mb-8">
+                                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Description</h3>
+                                <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{product.description}</p>
+                            </div>
+                        )}
 
                         {/* Returns */}
-                        <div>
-                            <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Returns</h3>
-                            <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{product.shippingInfo}</p>
-                        </div>
+                        {product.shippingInfo && (
+                            <div>
+                                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Returns</h3>
+                                <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{product.shippingInfo}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {/* //infinte banner */}
+                {/* Infinite banner */}
                 <InfiniteMarquee />
 
-
-                {/* //similar Items */}
+                {/* Similar Items */}
                 <section>
-
-
                     <SimilarProducts />
                     <SubscribeForm />
-
-
                 </section>
             </main>
         </>

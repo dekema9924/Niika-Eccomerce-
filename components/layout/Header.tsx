@@ -28,6 +28,7 @@ export default function Header() {
     const session = authClient.useSession()
 
 
+
     // disable scroll when menu is open on mobile
     useEffect(() => {
         if (typeof window === 'undefined') return;

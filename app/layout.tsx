@@ -12,6 +12,7 @@ import { EditProfileModalProvider } from "@/context/ModalContext";
 import EditProfileClient from "@/components/layout/user/EditProfileClient";
 import { ProfileModalProvider } from "@/context/ModalContext";
 import { Toaster } from "react-hot-toast";
+import { CartProvider } from "@/context/cartItemContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,19 +47,21 @@ export default function RootLayout({
                 <EditProfileModalProvider>
 
 
-                  <div className="min-h-screen flex flex-col">
-                    <div>
-                      <Header />
-                      <main className="grow relative">
-                        <EditProfileClient />
-                        <Backdrop />
-                        <SearchItemInput />
-                        {children}
-                      </main>
-                    </div>
+                  <CartProvider>
+                    <div className="min-h-screen flex flex-col">
+                      <div>
+                        <Header />
+                        <main className="grow relative">
+                          <EditProfileClient />
+                          <Backdrop />
+                          <SearchItemInput />
+                          {children}
+                        </main>
+                      </div>
 
-                    <Footer />
-                  </div>
+                      <Footer />
+                    </div>
+                  </CartProvider>
 
                 </EditProfileModalProvider>
               </AccountModalProvider>

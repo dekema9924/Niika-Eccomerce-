@@ -1,16 +1,9 @@
 import Link from 'next/link'
 import ProductItem from '../../ui/shopProduct/ProductItem'
-
-type Product = {
-    id: string | number
-    image: string
-    title: string
-    price: number
-    discountPrice?: number
-}
+import { ProductInterface } from '@/types/product';
 
 type ProductsProps = {
-    products: Product[]
+    products: ProductInterface[]
     heading: string
 }
 
@@ -31,9 +24,9 @@ function Products({ products, heading }: ProductsProps) {
                             <Link href={`/products/${item.id}`} key={item.id}>
                                 <ProductItem
                                     image={item.image}
-                                    title={item.title}
+                                    title={item.name}
                                     price={item.price}
-                                    discountPrice={item.discountPrice}
+                                    discountPrice={item?.discountPrice}
                                 />
                             </Link>
                         )

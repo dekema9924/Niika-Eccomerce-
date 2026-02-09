@@ -1,20 +1,28 @@
+'use client'
 
+type Props = {
+    cartItems: any[]
+    loading: boolean
+}
 
-import React from 'react'
+export default function CartTotal({ cartItems, loading }: Props) {
+    const totalAmt = cartItems.reduce((total, item) => {
+        const itemTotal = item.product.price * item.quantity
+        return total + itemTotal
+    }, 0)
 
-export default function CartTotal() {
     return (
-        <>
-            <div className='absolute bottom-10 w-full'>
-                <hr className='w-full border-t h-1 border-gray-300 my-10' />
-
-                <div className='flex items-center justify-between p-5'>
-                    <h1 className='text-2xl font-bold'>Subtotal</h1>
-                    <p className='font-bold text-xl'>$0</p>
-                </div>
-                <button className='w-11/12 block m-auto h-12 rounded-md bg-gray-300'>Checkout</button>
-
+        <div className='p-5 bg-black text-white'>
+            <div className='flex items-center justify-between mb-4'>
+                <h1 className='text-2xl font-bold'>Subtotal</h1>
+                <p className='font-bold text-xl'>
+                    {loading ? '...' : `$${totalAmt.toFixed(2)}`}
+                </p>
             </div>
-        </>
+
+            <button className='w-full h-12 rounded-md bg-white text-black hover:bg-gray-800 hover:text-white transition-colors font-semibold'>
+                Checkout
+            </button>
+        </div>
     )
 }

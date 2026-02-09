@@ -37,10 +37,16 @@ export const auth = betterAuth({
         },
     },
 
+    advanced: {
+        useSecureCookies: process.env.NODE_ENV === 'production'
+    },
     session: {
         expiresIn: 60 * 60 * 24 * 5,//5 days
         updateAge: 60 * 60 * 24, //Update session once per day
+
     },
+
+
 
     trustedOrigins: ["http://localhost:3000", "https://niika-eccomerce.vercel.app"],
     plugins: [nextCookies(),

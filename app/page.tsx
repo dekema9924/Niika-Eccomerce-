@@ -1,15 +1,34 @@
+import { prisma } from '@/lib/server/prisma'
 import Image from "next/image";
 import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
-import Products from "@/components/layout/home/Products";
+import Products, { ProductInterface } from "@/components/layout/home/Products";
 import Link from "next/link";
 import hero_mobile from '@/public/images/home/hero_girl.png'
 import Collection from "@/components/layout/home/Collection";
 import TrustSection from "@/components/layout/home/TrustSection";
 import heroDesktop from '@/public/images/home/heroDesktop.png'
 import SubscribeForm from "@/components/layout/SubscribeForm";
-import { fakeProductsData } from "./helpers/fakeProductData";
 
-export default function Home() {
+export default async function Home() {
+
+  const products = await prisma.product.findMany({
+    include: { images: true }
+
+  })
+  const formattedProducts: ProductInterface[] = products.slice(0, 10).map(p => ({
+    id: p.id,
+    image: p.images[0]?.url || '',  // First image
+    name: p.name,  // Map name to title
+    price: Number(p.price),
+    discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
+    isActive: p.isActive,
+    description: p.description,
+    isOutOfStock: p.isOutOfStock,
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
+    categoryId: p.categoryId
+  }))
+
   return (
     <>
       <main className="min-h-screen   ">
@@ -52,7 +71,7 @@ export default function Home() {
 
         {/* products section */}
         <div className="w-11/12 xl:w-10/12   m-auto ">
-          <Products heading="Products" products={fakeProductsData} />
+          <Products heading="Products" products={formattedProducts} />
         </div>
 
         <Link className="border p-2 flex items-center justify-center rounded-sm w-40 font-semibold m-auto" href={'/products'}>

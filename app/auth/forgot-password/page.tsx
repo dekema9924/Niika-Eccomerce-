@@ -111,7 +111,7 @@ export default function ForgotPassword() {
                 </form>
 
                 <div className="mt-6 text-center">
-                    <Link href="/auth/sign-in" className="text-sm text-gray-600 hover:text-gray-800 flex items-center justify-center">
+                    <Link href="/auth/signin" className="text-sm text-gray-600 hover:text-gray-800 flex items-center justify-center">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
