@@ -3,8 +3,10 @@ import { prisma } from "@/lib/server/prisma"
 
 
 
-export const GET = async (req: NextRequest, { params }: { params: { productId: string } }) => {
+export const GET = async (req: NextRequest, { params }: { params: Promise<{ productId: string }> }) => {
     let { productId } = await params
+
+
 
     try {
         let product = await prisma.product.findUnique({
