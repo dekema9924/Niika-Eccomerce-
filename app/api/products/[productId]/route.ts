@@ -2,13 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/server/prisma"
 
 
-type paramsType = {
-    params: {
-        productId: string
-    }
-}
 
-export const GET = async (req: NextRequest, { params }: paramsType) => {
+export const GET = async (req: NextRequest, { params }: { params: { productId: string } }) => {
     let { productId } = await params
 
     try {
