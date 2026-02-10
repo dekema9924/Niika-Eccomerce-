@@ -1,13 +1,14 @@
 import { prisma } from '@/lib/server/prisma'
 import Image from "next/image";
 import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
-import Products, { ProductInterface } from "@/components/layout/home/Products";
+import Products from "@/components/layout/home/Products";
 import Link from "next/link";
 import hero_mobile from '@/public/images/home/hero_girl.png'
 import Collection from "@/components/layout/home/Collection";
 import TrustSection from "@/components/layout/home/TrustSection";
 import heroDesktop from '@/public/images/home/heroDesktop.png'
 import SubscribeForm from "@/components/layout/SubscribeForm";
+import { ProductInterface } from '@/types/product';
 
 export default async function Home() {
 

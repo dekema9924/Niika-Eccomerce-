@@ -1,9 +1,10 @@
 
 'use server'
 import { prisma } from '@/lib/server/prisma'
-import Products, { ProductInterface } from "@/components/layout/home/Products"
+import Products from "@/components/layout/home/Products"
 import Link from "next/link"
 import TrustSection from "@/components/layout/home/TrustSection"
+import { ProductInterface } from '@/types/product'
 
 
 export default async function AllProductspage() {
