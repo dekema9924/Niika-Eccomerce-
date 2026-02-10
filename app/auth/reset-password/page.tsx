@@ -1,7 +1,7 @@
 'use client'
 import { ResetUserPassword } from '@/lib/server/auth.actions';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form"
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -32,7 +32,6 @@ export default function ResetPassword() {
 
     useEffect(() => {
         const token = new URLSearchParams(window.location.search).get("token")
-        console.log(token)
 
         if (!token) {
             toast.error("Invalid or expired verification link")
