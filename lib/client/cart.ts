@@ -109,3 +109,6 @@ export async function getCartItems() {
 
     return { items: serializedCart.items }
 }
+
+
+//delete item from cart
