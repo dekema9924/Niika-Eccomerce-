@@ -1,6 +1,6 @@
 'use server'
-import { getUserSession } from "../server/getUserSession";
-import { prisma } from "../server/prisma";
+import { getUserSession } from "./getUserSession";
+import { prisma } from "./prisma";
 
 
 

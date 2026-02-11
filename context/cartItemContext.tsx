@@ -1,8 +1,8 @@
 'use client'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { getCartItems } from '@/lib/client/cart'
+import { getCartItems } from '@/lib/server/cart'
 
-type CartItem = any
+type CartItem = any // Replace with your actual type
 
 type CartContextType = {
     cartItems: CartItem[]

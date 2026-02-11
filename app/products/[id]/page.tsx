@@ -8,7 +8,7 @@ import SubscribeForm from "@/components/layout/SubscribeForm"
 import axios from "axios"
 import { useEffect, useMemo, useState } from "react"
 import { ProductDetailsInterface } from "@/types/product"
-import { addToCart } from "@/lib/client/cart"
+import { addToCart } from "@/lib/server/cart"
 import { LoaderCircle } from "lucide-react"
 import toast from "react-hot-toast"
 import { useCart } from "@/context/cartItemContext"
@@ -110,12 +110,13 @@ export default function ProductDetailsPage() {
             })
 
             if (result.success) {
-                toast.success(result.message)
+                // toast.success(result.message)
                 await refreshCart() // ← Refresh cart immediately!
 
                 // Optional: Reset quantity after adding
                 setQuantity(1)
             }
+
         } catch (err: any) {
             toast.error(err.message || "Failed to add to cart")
         } finally {

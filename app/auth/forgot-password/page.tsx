@@ -15,7 +15,7 @@ export default function ForgotPassword() {
         setError('');
         setIsLoading(true);
         let url = process.env.NEXT_PUBLIC_URL
-        console.log(url)
+
         let resetPassword = await sendResetPasswordOtp(email, `${url}/auth/reset-password`)
 
         if (resetPassword.success) {
