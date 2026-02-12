@@ -14,6 +14,7 @@ import UserAvatar from './user/UserAvatarClient'
 import MyAccountModal from './user/MyAccountModal'
 import { useAccountModal } from '@/context/ModalContext'
 import { authClient } from '@/lib/client/auth.client'
+import CartNotify from '../ui/CartNotify'
 
 const girl = The_Girl_Next_Door({
     subsets: ['latin'],
@@ -112,10 +113,7 @@ export default function Header() {
                     </nav>
                 </div>
 
-                <div className='md:flex hidden gap-3 font-semibold items-center'>
-                    <p>Women</p>
-                    <p>Men</p>
-                </div>
+
             </div>
 
             {/* logo */}
@@ -124,8 +122,10 @@ export default function Header() {
             {/* right-nav */}
             <div className='flex items-center gap-4'>
                 <Search onClick={() => { setIsSearchOpen(true) }} className='cursor-pointer' />
-                <ShoppingCart onClick={() => { setIsCartOpen(true) }} className='cursor-pointer' />
-                {
+                <div className='relative'>
+                    <CartNotify />
+                    <ShoppingCart onClick={() => { setIsCartOpen(true) }} className='cursor-pointer' />
+                </div>                {
 
                     <Cart
                         isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen} />

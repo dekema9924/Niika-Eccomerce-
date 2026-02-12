@@ -37,6 +37,12 @@ export const auth = betterAuth({
         },
     },
 
+    account: {
+        accountLinking: {
+            enabled: true
+        }
+    },
+
     advanced: {
         useSecureCookies: process.env.NODE_ENV === 'production'
     },

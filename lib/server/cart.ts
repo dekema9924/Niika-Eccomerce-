@@ -11,11 +11,14 @@ type AddToCartInput = {
 }
 
 
+
+
 //add cart items
 export async function addToCart({ productId, quantity, variantId }: AddToCartInput) {
+    const session = await getUserSession()
+
     try {
         // Better Auth session in Server Action
-        const session = await getUserSession()
 
         if (!session?.user) {
             throw new Error('Unauthorized - Please log in')
@@ -109,6 +112,29 @@ export async function getCartItems() {
 
     return { items: serializedCart.items }
 }
+
+//check if cart empty
+export const isCartEmpty = async () => {
+    const session = await getUserSession()
+
+    if (!session?.user) {
+        return { isCart: false }
+    }
+
+    const cart = await prisma.cart.findUnique({
+        where: { userId: session.user.id },
+        include: {
+            items: true
+        }
+    })
+
+    if (!cart || cart.items.length === 0) {
+        return { isCart: false }
+    }
+
+    return { isCart: true }
+}
+
 
 
 //delete item from cart
