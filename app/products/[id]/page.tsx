@@ -110,10 +110,10 @@ export default function ProductDetailsPage() {
             })
 
             if (result.success) {
-                // toast.success(result.message)
-                await refreshCart() // ← Refresh cart immediately!
+                toast.success(result.message)
+                await refreshCart() // Refresh the cart 
 
-                // Optional: Reset quantity after adding
+                // Reseting quantity after adding
                 setQuantity(1)
             }
 

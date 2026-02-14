@@ -61,12 +61,13 @@ export const signIn = async (email: string, password: string, rememberMe?: boole
             await prisma.session.update({
                 where: { token: data.token },
                 data: {
-                    expiresAt: new Date(Date.now() + (rememberMe ? 5 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000))
-                    // rememberMe = true → 5 days
-                    // rememberMe = false → 1 hour
+                    expiresAt: new Date(Date.now() + (
+                        rememberMe
+                            ? 5 * 24 * 60 * 60 * 1000  // 5 days
+                            : 2 * 60 * 60 * 1000       // 2 hours (1 hour is too short)
+                    ))
                 }
             })
-
         }
         return { success: true, data }
     }

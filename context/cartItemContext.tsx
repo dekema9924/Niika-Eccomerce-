@@ -1,13 +1,15 @@
 'use client'
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { getCartItems } from '@/lib/server/cart'
+import { getCartItems, deleteCartItem } from '@/lib/server/cart'
+import toast from 'react-hot-toast'
 
-type CartItem = any // Replace with your actual type
+type CartItem = any
 
 type CartContextType = {
     cartItems: CartItem[]
     loading: boolean
     refreshCart: () => Promise<void>
+    deleteItem: (cartItemId: string) => Promise<void>
     cartCount: number
 }
 
@@ -26,6 +28,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setLoading(false)
     }
 
+    const deleteItem = async (cartItemId: string) => {
+        // Save original for rollback
+        const originalItems = cartItems
+
+        //  Optimistic update - remove item immediately
+        setCartItems(cartItems.filter((item) => item.id !== cartItemId))
+
+        //  Call server action
+        const res = await deleteCartItem(cartItemId)
+
+        if (res?.success) {
+            toast.success("Item deleted")
+        } else {
+            toast.error(res?.message || "Something went wrong")
+            //  Rollback on error
+            setCartItems(originalItems)
+        }
+    }
+
     useEffect(() => {
         fetchCart()
     }, [])
@@ -37,6 +58,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             cartItems,
             loading,
             refreshCart: fetchCart,
+            deleteItem,
             cartCount
         }}>
             {children}

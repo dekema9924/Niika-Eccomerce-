@@ -1,12 +1,15 @@
 'use client'
 import { X } from 'lucide-react'
 import Image from 'next/image'
+import { useCart } from '@/context/cartItemContext'
 
-type Props = {
-    cartItems: any[]
-}
+export default function CartItem() {
+    const { cartItems, deleteItem, loading } = useCart()
 
-export default function CartItem({ cartItems }: Props) {
+    if (loading) {
+        return <div className='text-center p-10'>Loading...</div>
+    }
+
     if (cartItems.length === 0) {
         return (
             <div className='text-center p-10 text-gray-500'>
@@ -29,7 +32,10 @@ export default function CartItem({ cartItems }: Props) {
                                 loading='lazy'
                                 className='rounded-2xl h-15 object-cover'
                             />
-                            <span className='absolute -top-2 bg-red-600 rounded-full cursor-pointer text-white -right-2'>
+                            <span
+                                onClick={() => deleteItem(items.id)}
+                                className='absolute -top-2 bg-red-600 rounded-full cursor-pointer text-white -right-2'
+                            >
                                 <X className='w-4 h-4' />
                             </span>
                         </div>

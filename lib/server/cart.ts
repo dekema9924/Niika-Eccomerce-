@@ -1,4 +1,5 @@
 'use server'
+import { success } from "better-auth";
 import { getUserSession } from "./getUserSession";
 import { prisma } from "./prisma";
 
@@ -108,33 +109,49 @@ export async function getCartItems() {
         })) || []
     }
 
-
-
     return { items: serializedCart.items }
 }
 
-//check if cart empty
-export const isCartEmpty = async () => {
+
+//delete item from cart
+export const deleteCartItem = async (cartItemId: string) => {
     const session = await getUserSession()
 
     if (!session?.user) {
-        return { isCart: false }
+        throw new Error('Unauthorized - Please log in')
     }
 
-    const cart = await prisma.cart.findUnique({
-        where: { userId: session.user.id },
-        include: {
-            items: true
+    try {
+        const userCart = await prisma.cart.findUnique({
+            where: { userId: session.user.id },
+        })
+
+        if (!userCart) {
+            throw new Error("User has no cart")
         }
-    })
 
-    if (!cart || cart.items.length === 0) {
-        return { isCart: false }
+        const deletedItem = await prisma.cartItem.deleteMany({
+            where: {
+                id: cartItemId,
+                cartId: userCart.id
+            }
+        })
+
+        if (deletedItem.count === 0) {
+            return {
+                success: false,
+                message: "Item not found in your cart"
+            }
+        }
+
+        return {
+            success: true
+        }
+
+    } catch (error) {
+        return {
+            success: false,
+            message: "Something went wrong"
+        }
     }
-
-    return { isCart: true }
 }
-
-
-
-//delete item from cart

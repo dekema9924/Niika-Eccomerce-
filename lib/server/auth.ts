@@ -48,7 +48,6 @@ export const auth = betterAuth({
     },
     session: {
         expiresIn: 60 * 60 * 24 * 5,//5 days
-        updateAge: 60 * 60 * 24, //Update session once per day
 
     },
 
