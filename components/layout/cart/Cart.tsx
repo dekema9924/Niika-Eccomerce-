@@ -34,7 +34,7 @@ export default function Cart({ isCartOpen, setIsCartOpen }: Props) {
                 {loading ? (
                     <div className='text-center p-5'>Loading...</div>
                 ) : (
-                    <CartItem cartItems={cartItems} />
+                    <CartItem />
                 )}
             </div>
 
