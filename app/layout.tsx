@@ -50,7 +50,7 @@ export default function RootLayout({
                   <CartProvider>
                     <div className="min-h-screen flex flex-col">
                       <div>
-                        <Header />
+                        {/* <Header /> */}
                         <main className="grow relative">
                           <EditProfileClient />
                           <Backdrop />

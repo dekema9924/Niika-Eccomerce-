@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { getUserSession } from "./lib/server/getUserSession";
+import { prisma } from '@/lib/server/prisma'
 
 export async function proxy(request: NextRequest) {
     const session = await getUserSession()
@@ -15,8 +16,12 @@ export async function proxy(request: NextRequest) {
     const isPublicRoute = publicRoutes.includes(pathname)
 
     // Protected routes
-    const protectedRoutes = ['/checkout', '/account', '/myorders', '/wishlist']
+    const protectedRoutes = ['/checkout', '/account', '/myorders', '/wishlist', '/admin']
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+
+
+
+
 
     // Handle API routes first - return error instead of redirect
     if (pathname.startsWith('/api/') && !session) {
@@ -53,6 +58,24 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(loginUrl)
     }
 
+
+    //isAmin route
+    const AdminRoutes = ['/admin']
+
+    const isAdmin = session?.user?.id
+        ? await prisma.user.findUnique({
+            where: { id: session.user.id },
+        })
+        : null
+    // Redirect logged-out users away from protected pages
+    if (!AdminRoutes && isAdmin?.role !== 'admin') {
+        const unauthorizeUrl = new URL('/unauthorized', request.url)
+        // loginUrl.searchParams.set('redirect', pathname)
+        return NextResponse.redirect(unauthorizeUrl)
+    }
+
+
+
     // Allow access
     return NextResponse.next()
 }
@@ -66,6 +89,7 @@ export const config = {
         '/account/:path*',
         '/myorders/:path*',
         '/wishlist/:path*',
-        '/api/protected/:path*'
+        '/admin/:path*',
+
     ]
 }

@@ -1,5 +1,4 @@
 'use server'
-import { success } from "better-auth";
 import { getUserSession } from "./getUserSession";
 import { prisma } from "./prisma";
 

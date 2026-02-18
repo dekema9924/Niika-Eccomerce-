@@ -16,18 +16,25 @@ import { useAccountModal } from '@/context/ModalContext'
 import { authClient } from '@/lib/client/auth.client'
 import CartNotify from '../ui/CartNotify'
 
+
+interface HeaderProps {
+    isUserAdmin?: boolean
+}
+
 const girl = The_Girl_Next_Door({
     subsets: ['latin'],
     weight: ['400',],
 })
 
-export default function Header() {
+export default function Header({ isUserAdmin }: HeaderProps) {
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isCartOpen, setIsCartOpen } = useCartContext()
     const { setIsSearchOpen } = useSearchContext()
     const { isOpen, setIsOpen } = useAccountModal()
     const session = authClient.useSession()
 
+    console.log(isUserAdmin)
 
 
     // disable scroll when menu is open on mobile
@@ -93,6 +100,20 @@ export default function Header() {
 
                                 )
                             }
+
+                            {/* Add admin link */}
+
+                            {isUserAdmin && (
+                                <Link
+                                    onClick={() => setIsMenuOpen(false)}
+                                    href={'/admin'}
+                                    className='text-red-600 font-bold'
+                                >
+                                    ADMIN PANEL
+                                </Link>
+                            )}
+
+
 
                         </div>
                         <div className='my-4'>
