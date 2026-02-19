@@ -34,7 +34,6 @@ export default function Header({ isUserAdmin }: HeaderProps) {
     const { isOpen, setIsOpen } = useAccountModal()
     const session = authClient.useSession()
 
-    console.log(isUserAdmin)
 
 
     // disable scroll when menu is open on mobile
